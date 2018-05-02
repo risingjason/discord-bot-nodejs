@@ -1,0 +1,24 @@
+{
+  "name": "discord-bot-nodejs",
+  "version": "1.0.0",
+  "description": "Discord Bot Created using Discord.js",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/risingjason/discord-bot-nodejs.git"
+  },
+  "author": "Jason Yatfai Zhang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/risingjason/discord-bot-nodejs/issues"
+  },
+  "homepage": "https://github.com/risingjason/discord-bot-nodejs#readme",
+  "dependencies": {
+    "bufferutil": "^3.0.4",
+    "discord.js": "^11.3.2",
+    "erlpack": "github:hammerandchisel/erlpack"
+  }
+}
