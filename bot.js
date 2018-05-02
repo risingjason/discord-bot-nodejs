@@ -8,7 +8,15 @@ client.on('ready', () => {
 })
 
 client.on('message', msg => {
-  if (msg.content === 'ping') {
+  // make sure no recursive messages
+  if (msg.author.bot) return
+
+  // split message to words
+  const args = msg.content.split(/ +g/)
+  // removes first element from args and saves it to command
+  const command = args.shift().toLowerCase()
+
+  if (command === 'ping') {
     msg.reply('pong')
   }
 })
