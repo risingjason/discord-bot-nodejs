@@ -7,17 +7,31 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
 })
 
-client.on('message', msg => {
+client.on('message', async (message) => {
   // make sure no recursive messages
-  if (msg.author.bot) return
+  if (message.author.bot) return
 
-  // split message to words
-  const args = msg.content.split(/ +g/)
+  // make sure first argument starts with the prefix
+  if (message.content.indexOf(config.prefix) !== 0) return
+
+  // removes prefix and then split message to words
+  const args = message.content.slice(config.prefix.length).trim().split(/ +g/)
   // removes first element from args and saves it to command
   const command = args.shift().toLowerCase()
 
   if (command === 'ping') {
-    msg.reply('pong')
+    message.reply('pong')
+  }
+
+  if (command === 'latency') {
+    // using promises
+    // message.channel.send('latency...').then((msg) => {
+    //   msg.edit(`latency is ${msg.createdTimestamp - message.createdTimestamp}ms`)
+    // })
+
+    // using async/await
+    let msg = await message.channel.send('Latency...')
+    msg.edit(`latency is ${msg.createdTimestamp - message.createdTimestamp}ms`)
   }
 })
 
