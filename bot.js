@@ -1,7 +1,18 @@
 const Discord = require('discord.js')
 const config = require('./config.json')
+const fs = require('fs')
 
 const client = new Discord.Client()
+
+// reads file name of commands folder
+fs.readdir('./commands/', (err, files) => {
+  if (err) console.log(err)
+
+  let jsFile = files.filter(f => f.split('.').pop() === 'js')
+  if (jsFile.length <= 0) {
+    console.log('Couldn\'t find commands.')
+  }
+})
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
@@ -32,6 +43,20 @@ client.on('message', async (message) => {
     // using async/await
     let msg = await message.channel.send('Latency...')
     msg.edit(`latency is ${msg.createdTimestamp - message.createdTimestamp}ms`)
+  }
+
+  // botinfo command. testing embeds
+  if (command === 'botinfo') {
+    let botIcon = client.user.displayAvatarURL
+    let botEmbed = new Discord.RichEmbed()
+      .setDescription('Bot information')
+      .setColor('#ffffff')
+      .setThumbnail(botIcon)
+      .addField('Bot Name', client.user.username)
+      .addBlankField()
+      .addField('Created By', 'Jason Yatfai Zhang')
+
+    return message.channel.send(botEmbed)
   }
 })
 
