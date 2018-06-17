@@ -6,5 +6,6 @@ module.exports.run = async (client, message, args) => {
   msg.edit(`latency is ${msg.createdTimestamp - message.createdTimestamp}ms`)
 }
 module.exports.help = {
-  name: 'latency'
+  name: 'latency',
+  descShort: 'Returns the time it takes the bot to receive your message.'
 }

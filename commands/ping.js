@@ -7,5 +7,6 @@ module.exports.run = async (client, message, args) => {
 }
 
 module.exports.help = {
-  name: 'ping'
+  name: 'ping',
+  descShort: 'Simple command that makes the bot reply "Pong".'
 }

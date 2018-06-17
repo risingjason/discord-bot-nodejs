@@ -42,10 +42,12 @@ client.on('message', async (message) => {
   // any arguments after the command
   let args = messageArray.slice(1)
 
-  // removes the prefix symbol and checks if command exists for the bot
-  let commandExists = client.commands.get(command.slice(prefix.length))
-  if (commandExists) {
-    commandExists.run(client, message, args)
+  if (command.indexOf(prefix) === 0) {
+    // removes the prefix symbol and checks if command exists for the bot
+    let commandExists = client.commands.get(command.slice(prefix.length))
+    if (commandExists) {
+      commandExists.run(client, message, args)
+    }
   }
 })
 
