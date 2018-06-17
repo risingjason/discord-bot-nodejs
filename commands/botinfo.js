@@ -1,6 +1,8 @@
 const Discord = require('discord.js')
 
 module.exports.run = async (client, message, args) => {
+  // format
+  // !botinfo
   let botIcon = client.user.displayAvatarURL
   let botEmbed = new Discord.RichEmbed()
     .setDescription('Bot information')
