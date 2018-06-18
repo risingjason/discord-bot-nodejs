@@ -26,6 +26,15 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
 })
 
+client.on('guildMemberAdd', async (member) => {
+  let generalChannel = member.guild.channels.find(`name`, 'general')
+  generalChannel.send(`Welcome! ${member} has joined **${member.guild.name}.**`)
+})
+
+client.on('guildMemberRemove', async (member) => {
+  let generalChannel = member.guild.channels.find(`name`, 'general')
+  generalChannel.send(`Goodbye! ${member} has left **${member.guild.name}.**`)
+})
 // goes through the commands handler and if command exists,
 // the bot will run that module in the commands folder
 client.on('message', async (message) => {
