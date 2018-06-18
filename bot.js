@@ -16,7 +16,7 @@ fs.readdir('./commands/', (err, files) => {
 
   jsFile.forEach((f, i) => {
     let props = require(`./commands/${f}`)
-    console.log(`${f} loaded!`)
+    // console.log(`${f} loaded!`)
     // setting the command name based on the help module
     client.commands.set(props.help.name, props)
   })
