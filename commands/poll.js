@@ -36,7 +36,7 @@ function calcDelay (client, message, args) {
       } else if (time > 5) {
         message.channel.send('The maximum delay is 5 minutes.')
       } else {
-        delay = 1000 * 60 * args[0]
+        delay = 1000 * args[0]
       }
     } else {
       message.channel.send('Please put a valid time delay.')
@@ -52,14 +52,14 @@ function calcVotes (client, message, args) {
   let thumbsDown = votes.get('👎').count
   let question = args.splice(1)
   if (question.length !== 0) {
-    question.splice(0, 0, 'for "')
-    question.splice(question.length - 1, 0, '"')
+    question.splice(0, 0, 'for `')
+    question.splice(question.length, 0, '`')
   }
   if (thumbsUp > thumbsDown) {
-    message.channel.send(':white_check_mark: VOTE YES PASSED :white_check_mark: ' + question)
+    message.channel.send(':white_check_mark:  VOTE YES PASSED  :white_check_mark: ' + question.join(' '))
   } else if (thumbsUp === thumbsDown) {
-    message.channel.send(':ballot_box:  VOTE TIED :ballot_box: "' + question + '"')
+    message.channel.send(':ballot_box:  VOTE TIED  :ballot_box: ' + question.join(' '))
   } else {
-    message.channel.send(':white_check_mark: VOTE NO PASSED :white_check_mark: ' + question)
+    message.channel.send(':no_entry_sign:  VOTE NO PASSED  :no_entry_sign: ' + question.join(' '))
   }
 }
