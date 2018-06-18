@@ -36,7 +36,7 @@ function calcDelay (client, message, args) {
       } else if (time > 5) {
         message.channel.send('The maximum delay is 5 minutes.')
       } else {
-        delay = 1000 * args[0]
+        delay = 1000 * 60 * args[0]
       }
     } else {
       message.channel.send('Please put a valid time delay.')
