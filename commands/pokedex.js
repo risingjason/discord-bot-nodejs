@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'pokedex',
-  descShort: 'Find information about your favorite pokemon, moves, and more!'
+  descShort: 'Find information about your favorite pokemon!'
 }
 
 async function findPokemon (entry) {
