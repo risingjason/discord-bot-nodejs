@@ -1,0 +1,24 @@
+{
+    "attributes": {
+        "EARTH": "#1b211e",
+        "WIND": "#75a85b",
+        "WATER": "#1eb8e3",
+        "FIRE": "#fc1c1c",
+        "LIGHT": "#e1e660",
+        "DARK": "#7e549c",
+        "DIVINE": "#b38f59",
+        "Spell": "#207868",
+        "Trap": "#994577"
+    },
+    "link_arrows": {
+        "Top-Left": ":arrow_upper_left:",
+        "Top": ":arrow_up:",
+        "Top-Right": ":arrow_upper_right:",
+        "Right": ":arrow_right:",
+        "Bottom-Right": ":arrow_lower_right:",
+        "Bottom": ":arrow_down:",
+        "Bottom-Left": ":arrow_lower_left:",
+        "Left": ":arrow_left:"
+    }
+    
+}
