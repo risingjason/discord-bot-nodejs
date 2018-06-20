@@ -1,6 +1,8 @@
 const Discord = require('discord.js')
 const Pokedex = require('pokedex-promise-v2')
+
 const P = new Pokedex()
+const typeColors = require('../pkmnTypes.json')
 
 module.exports.run = async (client, message, args) => {
   let thingToFind = args[0].toLowerCase()
@@ -23,12 +25,11 @@ async function findPokemon (entry) {
     let reply = createEmbed(pkmnFound)
     return reply
   } catch (err) {
-    console.log(err)
     return '`Pokemon not found. Please try again.`'
   }
 }
 
-function createEmbed (pkmnFound, message) {
+async function createEmbed (pkmnFound, message) {
   let embed = new Discord.RichEmbed()
     .setTitle(capFirstLetter(pkmnFound.name))
     .setThumbnail(pkmnFound.sprites.front_default)
@@ -37,6 +38,9 @@ function createEmbed (pkmnFound, message) {
   let types = []
   for (let idx of pkmnFound.types) {
     let save = capFirstLetter(idx.type.name)
+    if (idx.slot === 1) {
+      embed.setColor(typeColors[save])
+    }
     types.push(save)
   }
   embed.addField('Type: ', types.reverse().join(' '))
@@ -52,7 +56,7 @@ function createEmbed (pkmnFound, message) {
   embed.addField('Abilities: ', abilities.reverse().join(', '))
 
   let heldItems = []
-  if (pkmnFound.held_items === 0) {
+  if (pkmnFound.held_items.length === 0) {
     embed.addField('Held Items', 'None.')
   } else {
     for (let idx of pkmnFound.held_items) {
@@ -64,6 +68,7 @@ function createEmbed (pkmnFound, message) {
 
   let link = `https://bulbapedia.bulbagarden.net/wiki/${pkmnFound.name}`
   embed.addField('Links', `[Bulbpedia](${link})`)
+
   return embed
 }
 

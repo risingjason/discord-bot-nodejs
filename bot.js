@@ -45,7 +45,10 @@ client.on('message', async (message) => {
   // symbol for bot to know user wants a command
   const prefix = config.prefix
   // the message user sent
-  const messageArray = message.content.split(' ')
+  const messageArray = message.content.trim().split(' ').filter((element) => {
+    return element !== ''
+  })
+
   // the bot command
   let command = messageArray[0]
   // any arguments after the command
