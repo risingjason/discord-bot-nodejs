@@ -22,14 +22,14 @@ module.exports.help = {
 async function findPokemon (entry) {
   try {
     let pkmnFound = await P.getPokemonByName(entry)
-    let reply = createEmbed(pkmnFound)
+    let reply = createPkmnEmbed(pkmnFound)
     return reply
   } catch (err) {
     return '`Pokemon not found. Please try again.`'
   }
 }
 
-async function createEmbed (pkmnFound, message) {
+async function createPkmnEmbed (pkmnFound) {
   let embed = new Discord.RichEmbed()
     .setTitle(capFirstLetter(pkmnFound.name))
     .setThumbnail(pkmnFound.sprites.front_default)
