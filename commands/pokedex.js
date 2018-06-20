@@ -3,20 +3,29 @@ const Pokedex = require('pokedex-promise-v2')
 const P = new Pokedex()
 
 module.exports.run = async (client, message, args) => {
-  let find = args[0].toLowerCase()
-  try {
-    let pkmnFound = await P.getPokemonByName(find)
-    let reply = createEmbed(pkmnFound)
-    return message.channel.send(reply)
-  } catch (err) {
-    return message.channel.send('Pokemon not found. Please try again.')
-    // console.log(err)
+  let thingToFind = args[0].toLowerCase()
+  let whoToFind = args[1].toLowerCase()
+  if (thingToFind === 'pkmn' || thingToFind === 'pokemon') {
+    let msg = await message.channel.send('`Searching...`')
+    let pkmnReply = await findPokemon(whoToFind)
+    return msg.edit(pkmnReply)
   }
 }
 
 module.exports.help = {
   name: 'pokedex',
-  descShort: 'Find information about your favorite 2, pokemon moves, and more!'
+  descShort: 'Find information about your favorite pokemon, moves, and more!'
+}
+
+async function findPokemon (entry) {
+  try {
+    let pkmnFound = await P.getPokemonByName(entry)
+    let reply = createEmbed(pkmnFound)
+    return reply
+  } catch (err) {
+    console.log(err)
+    return '`Pokemon not found. Please try again.`'
+  }
 }
 
 function createEmbed (pkmnFound, message) {
@@ -40,9 +49,21 @@ function createEmbed (pkmnFound, message) {
     }
     abilities.push(save)
   }
-  embed.addField('Abilities: ', abilities.reverse().join(' '))
+  embed.addField('Abilities: ', abilities.reverse().join(', '))
 
-  embed.addField('Bulbpedia Link: ', `https://bulbapedia.bulbagarden.net/wiki/${pkmnFound.name}_(Pokémon)`)
+  let heldItems = []
+  if (pkmnFound.held_items === 0) {
+    embed.addField('Held Items', 'None.')
+  } else {
+    for (let idx of pkmnFound.held_items) {
+      let save = capFirstLetter(idx.item.name)
+      heldItems.push(save)
+    }
+    embed.addField('Held Items', heldItems.join(', '))
+  }
+
+  let link = `https://bulbapedia.bulbagarden.net/wiki/${pkmnFound.name}`
+  embed.addField('Links', `[Bulbpedia](${link})`)
   return embed
 }
 
