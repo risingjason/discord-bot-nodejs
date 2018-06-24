@@ -1,6 +1,5 @@
 const Discord = require('discord.js')
 const osrs = require('osrs-wrapper')
-// const logoLink = 'https://vignette.wikia.nocookie.net/2007scape/images/4/41/Old_School_RuneScape_logo.png/revision/latest?cb=20170406224036&format=original'
 
 module.exports.run = async (client, message, args) => {
   let searchWhat = null
@@ -13,16 +12,12 @@ module.exports.run = async (client, message, args) => {
   try {
     if (searchWhat === 'player') {
       let player = await osrs.hiscores.getPlayer(query)
-      // console.log(player.Skills)
       return msg.edit(createPlayerEmbed(player.Skills, query))
     } else if (searchWhat === 'item') {
       let item = await osrs.ge.getItem(query)
-      console.log(item)
       return msg.edit(createItemEmbed(JSON.parse(item).item))
-      // console.log(JSON.parse(item))
     }
   } catch (err) {
-    console.log(err)
     return msg.edit('`Item or player not found.`')
   }
 }

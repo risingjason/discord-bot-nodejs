@@ -36,7 +36,7 @@ function createWeatherEmbed (weather) {
     .setTitle(`${weather.name} :flag_${country}:`)
     .setDescription(weather.weather[0].main)
     .setThumbnail(icon)
-    .setColor('#ffffff')
+    .setColor('#6dc4ff')
     .addField('Temperature :thermometer:', `${weather.main.temp}℉`, true)
     .addField('Wind Speed :dash:', `${weather.wind.speed} mph`, true)
     .addField('High :fire:', `${weather.main.temp_max}℉`, true)
