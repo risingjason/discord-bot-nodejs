@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const osrs = require('osrs-wrapper')
-const logoLink = 'https://vignette.wikia.nocookie.net/2007scape/images/4/41/Old_School_RuneScape_logo.png/revision/latest?cb=20170406224036&format=original'
+// const logoLink = 'https://vignette.wikia.nocookie.net/2007scape/images/4/41/Old_School_RuneScape_logo.png/revision/latest?cb=20170406224036&format=original'
 
 module.exports.run = async (client, message, args) => {
   let searchWhat = null
@@ -9,7 +9,6 @@ module.exports.run = async (client, message, args) => {
   if (args.length !== 0 && args.length !== 1) {
     searchWhat = args.shift()
     query = args.join(' ')
-    console.log(query)
   }
   try {
     if (searchWhat === 'player') {
@@ -18,6 +17,7 @@ module.exports.run = async (client, message, args) => {
       return msg.edit(createPlayerEmbed(player.Skills, query))
     } else if (searchWhat === 'item') {
       let item = await osrs.ge.getItem(query)
+      console.log(item)
       return msg.edit(createItemEmbed(JSON.parse(item).item))
       // console.log(JSON.parse(item))
     }
@@ -45,7 +45,8 @@ function createPlayerEmbed (player, name) {
   return embed
 }
 
-function createItemEmbed (item) {
+function createItemEmbed (item, graph) {
+  let encoded = fixedEncodeURIComponent(item.name.replace(' ', '_'))
   let embed = new Discord.RichEmbed()
     .setTitle(item.name)
     .setThumbnail(item.icon_large)
@@ -54,6 +55,20 @@ function createItemEmbed (item) {
     .addField('Members Item', `${item.members.toUpperCase()}`)
     .addField('Price', `${item.current.price} gp`, true)
     .addField('Today\'s Trend', `${item.today.price.replace(' ', '')} gp`, true)
-    .addField('Wiki Link:', `[Link](http://oldschoolrunescape.wikia.com/wiki/${item.name.replace(' ', '_')})`)
+    .addField('30 Day Trend', `${item.day30.change}`, true)
+    .addField('90 Day Trend', `${item.day90.change}`, true)
+    .addField('180 Day Trend', `${item.day180.change}`, true)
+    .addField('Links:',
+      `[Wiki Link](http://oldschoolrunescape.wikia.com/wiki/${encoded})\n` +
+      `[OSRS GE Graph](http://services.runescape.com/m=itemdb_oldschool/${encoded}/viewitem?obj=${item.id})`
+    )
   return embed
+}
+
+// source from
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
+function fixedEncodeURIComponent (str) {
+  return encodeURIComponent(str).replace(/[!'()*]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16)
+  })
 }
