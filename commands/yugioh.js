@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const superagent = require('superagent')
-const yugiohData = require('../yugiohData.json')
+const yugiohData = require('../extraData/yugiohData.json')
 
 module.exports.run = async (client, message, args) => {
   let query = encodeURIComponent(args.join(' '))
