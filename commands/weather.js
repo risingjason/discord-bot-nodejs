@@ -1,6 +1,13 @@
 const Discord = require('discord.js')
 const superagent = require('superagent')
-const config = require('../config.json')
+
+// config file for local testing
+let config = null
+try {
+  config = require('./config.json')
+} catch (err) {
+  console.log('Config not found.')
+}
 
 // search by zip code
 // api.openweathermap.org/data/2.5/weather?zip={zip code},{country code}

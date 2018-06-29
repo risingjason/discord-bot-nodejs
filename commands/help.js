@@ -1,5 +1,12 @@
 const Discord = require('discord.js')
-const config = require('../config.json')
+
+// config file for local testing
+let config = null
+try {
+  config = require('./config.json')
+} catch (err) {
+  console.log('Config not found.')
+}
 
 module.exports.run = async (client, message, args) => {
   // format
