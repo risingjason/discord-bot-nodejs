@@ -15,7 +15,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'poll',
-  parameters: '',
+  parameters: '<time_delay> <question>',
   descShort: 'Poll on a yes/no question and the bot will tally all the :+1: and :-1: votes!'
 }
 

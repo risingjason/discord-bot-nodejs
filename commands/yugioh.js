@@ -27,7 +27,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'yugioh',
-  parameters: '',
+  parameters: '<card_name>',
   descShort: 'Search for your favorite yugioh cards!'
 }
 

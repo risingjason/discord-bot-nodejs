@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'pokedex',
-  parameters: '',
+  parameters: 'pkmn <pokemon_name/pokedex_entry>',
   descShort: 'Find information about your favorite pokemon!'
 }
 

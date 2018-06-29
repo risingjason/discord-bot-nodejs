@@ -28,7 +28,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'osrs',
-  parameters: '',
+  parameters: '<item/player> <item_name/user_name>',
   descShort: 'Look up anyone on the Old School RuneScape highscores or look up any item on the OSRS Grand Exchange.'
 }
 

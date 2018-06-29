@@ -28,7 +28,7 @@ function generalHelp (client, message) {
     .setFooter('Created by Jason Yatfai Zhang.')
 
   for (let [cmdName, cmdFull] of client.commands) {
-    helpMessage.addField(config.prefix + cmdName, cmdFull.help.descShort)
+    helpMessage.addField(config.prefix + cmdName + '  ' + cmdFull.help.parameters, cmdFull.help.descShort)
   }
   return helpMessage
 }
