@@ -12,6 +12,7 @@ module.exports.run = async (client, message, args) => {
     .addField('Welcome!', 'This bot was made as a personal project to play around with the discord.js' +
       ' API. This bot was created using Node.js. If you would like to see a list of commands, use `!help`.')
     .addField('Check out the project on GitHub!', 'https://github.com/risingjason/discord-bot-nodejs')
+    .addField('Bugs/Feedback', 'If you find any bugs or would like to send some feedback, please feel free to DM me.')
     .setFooter('Created by Jason Yatfai Zhang')
 
   return message.channel.send(botEmbed)
