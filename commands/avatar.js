@@ -15,5 +15,6 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'avatar',
+  parameters: '',
   descShort: 'Displays a larger image of your or another person\'s avatar.'
 }

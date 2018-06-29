@@ -15,6 +15,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'poll',
+  parameters: '',
   descShort: 'Poll on a yes/no question and the bot will tally all the :+1: and :-1: votes!'
 }
 
@@ -28,7 +29,7 @@ function calcDelay (client, message, args) {
   let delay = 0
   let time = parseInt(args[0])
   if (!args || args.length === 0) {
-    message.channel.send('Please put valid arguments. ex. `!poll 1 Should I buy milk?`')
+    message.channel.send('`Please put valid arguments. ex. !poll 1 Should I buy milk?`')
   } else { // find delay
     if (typeof time === 'number' && time % 1 === 0) {
       if (time < 1) {

@@ -3,6 +3,9 @@ const superagent = require('superagent')
 const yugiohData = require('../extraData/yugiohData.json')
 
 module.exports.run = async (client, message, args) => {
+  if (args.length === 0) {
+    return message.channel.send('`Please put a card name to search. ex. !yugioh ash blossom & joyous spring`')
+  }
   let query = encodeURIComponent(args.join(' '))
   let msg = await message.channel.send('`Searching...`')
 
@@ -24,6 +27,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'yugioh',
+  parameters: '',
   descShort: 'Search for your favorite yugioh cards!'
 }
 

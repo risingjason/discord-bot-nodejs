@@ -5,6 +5,9 @@ const P = new Pokedex()
 const typeColors = require('../extraData/pkmnTypes.json')
 
 module.exports.run = async (client, message, args) => {
+  if (args.length <= 1) {
+    return message.channel.send('`Please enter a pokemon name or pokedex number. ex. !pokedex pkmn charizard`')
+  }
   let thingToFind = args[0].toLowerCase()
   let whoToFind = args[1].toLowerCase()
   if (thingToFind === 'pkmn' || thingToFind === 'pokemon') {
@@ -16,6 +19,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'pokedex',
+  parameters: '',
   descShort: 'Find information about your favorite pokemon!'
 }
 

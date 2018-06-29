@@ -2,6 +2,10 @@ const Discord = require('discord.js')
 const osrs = require('osrs-wrapper')
 
 module.exports.run = async (client, message, args) => {
+  if (args.length <= 1) {
+    return message.channel.send('`Please enter the right query. ex. !osrs player Name or !osrs item dragon dagger`')
+  }
+
   let searchWhat = null
   let query = null
   let msg = await message.channel.send('`Searching...`')
@@ -24,6 +28,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'osrs',
+  parameters: '',
   descShort: 'Look up anyone on the Old School RuneScape highscores or look up any item on the OSRS Grand Exchange.'
 }
 
@@ -40,7 +45,7 @@ function createPlayerEmbed (player, name) {
   return embed
 }
 
-function createItemEmbed (item, graph) {
+function createItemEmbed (item) {
   let encoded = fixedEncodeURIComponent(item.name.replace(' ', '_'))
   let embed = new Discord.RichEmbed()
     .setTitle(item.name)

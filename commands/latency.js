@@ -7,5 +7,6 @@ module.exports.run = async (client, message, args) => {
 }
 module.exports.help = {
   name: 'latency',
+  parameters: '',
   descShort: 'Returns the time it takes the bot to receive your message.'
 }

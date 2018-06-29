@@ -13,6 +13,7 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'help',
+  parameters: '',
   descShort: 'Lists all the usable bot commands.'
 }
 

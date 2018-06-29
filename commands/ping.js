@@ -8,5 +8,6 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'ping',
+  parameters: '',
   descShort: 'Simple command that makes the bot reply "Pong".'
 }

@@ -19,5 +19,6 @@ module.exports.run = async (client, message, args) => {
 
 module.exports.help = {
   name: 'botinfo',
+  parameters: '',
   descShort: 'A more detailed description of the Chinatown Discord Bot.'
 }
