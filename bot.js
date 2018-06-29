@@ -11,6 +11,8 @@ try {
 } catch (err) {
   console.log('Config not found.')
 }
+// symbol for bot to know user wants a command
+const prefix = config ? config.prefix : process.env.PREFIX
 
 // loading up the commands handler
 fs.readdir('./commands/', (err, files) => {
@@ -31,6 +33,9 @@ fs.readdir('./commands/', (err, files) => {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
+
+  // set activity
+  client.user.setActivity(`${prefix}help`, { type: 'PLAYING' })
 })
 
 client.on('guildMemberAdd', async (member) => {
@@ -49,8 +54,6 @@ client.on('message', async (message) => {
   if (message.author.bot) return
   if (message.channel.type === 'dm') return
 
-  // symbol for bot to know user wants a command
-  const prefix = config ? config.prefix : process.env.PREFIX
   // the message user sent
   const messageArray = message.content.trim().split(' ').filter((element) => {
     return element !== ''
