@@ -15,9 +15,10 @@ try {
 // http://api.openweathermap.org/data/2.5/weather?q=Los%20Angeles&appid=
 module.exports.run = async (client, message, args) => {
   let city = args.length === 0 ? 'los angeles' : args.join(' ')
+  let apiKey = config ? config.weatherAPIkey : process.env.WEATHER_API_KEY
   let searchQueries = {
     q: city,
-    appid: config.weatherAPIkey || process.env.WEATHER_API_KEY,
+    appid: apiKey,
     units: 'imperial'
   }
   let msg = await message.channel.send('`Searching...`')

@@ -50,7 +50,7 @@ client.on('message', async (message) => {
   if (message.channel.type === 'dm') return
 
   // symbol for bot to know user wants a command
-  const prefix = config.prefix || process.env.PREFIX
+  const prefix = config ? config.prefix : process.env.PREFIX
   // the message user sent
   const messageArray = message.content.trim().split(' ').filter((element) => {
     return element !== ''
@@ -70,5 +70,5 @@ client.on('message', async (message) => {
   }
 })
 
-const token = config.token || process.env.BOT_TOKEN
+const token = config ? config.token : process.env.BOT_TOKEN
 client.login(token)

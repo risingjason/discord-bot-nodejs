@@ -35,7 +35,7 @@ function generalHelp (client, message) {
     .setThumbnail(botIcon)
     .setFooter('Created by Jason Yatfai Zhang.')
 
-  let prefix = config.prefix || process.env.PREFIX
+  let prefix = config ? config.prefix : process.env.PREFIX
   for (let [cmdName, cmdFull] of client.commands) {
     helpMessage.addField(prefix + cmdName + '  ' + cmdFull.help.parameters, cmdFull.help.descShort)
   }
