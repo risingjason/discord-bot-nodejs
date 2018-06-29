@@ -70,4 +70,5 @@ client.on('message', async (message) => {
   }
 })
 
-client.login(config.token || process.env.BOT_TOKEN)
+const token = config.token || process.env.BOT_TOKEN
+client.login(token)

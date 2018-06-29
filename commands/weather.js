@@ -4,7 +4,7 @@ const superagent = require('superagent')
 // config file for local testing
 let config = null
 try {
-  config = require('./config.json')
+  config = require('../config.json')
 } catch (err) {
   console.log('Config not found.')
 }
