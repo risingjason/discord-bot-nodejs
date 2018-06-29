@@ -10,7 +10,7 @@ module.exports.run = async (client, message, args) => {
   let city = args.length === 0 ? 'los angeles' : args.join(' ')
   let searchQueries = {
     q: city,
-    appid: config.weatherAPIkey,
+    appid: config.weatherAPIkey || process.env.WEATHER_API_KEY,
     units: 'imperial'
   }
   let msg = await message.channel.send('`Searching...`')

@@ -43,7 +43,7 @@ client.on('message', async (message) => {
   if (message.channel.type === 'dm') return
 
   // symbol for bot to know user wants a command
-  const prefix = config.prefix
+  const prefix = config.prefix || process.env.PREFIX
   // the message user sent
   const messageArray = message.content.trim().split(' ').filter((element) => {
     return element !== ''
