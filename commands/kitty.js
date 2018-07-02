@@ -2,14 +2,24 @@ const Discord = require('discord.js')
 const superagent = require('superagent')
 
 module.exports.run = async (client, message, args) => {
-  let {body} = await superagent
-    .get('https://random.dog/woof.json')
+  let cat = {}
+  try {
+    let response = await superagent.get('http://aws.random.cat/meow')
+    cat = response.body
+  } catch (err) {
+    cat['file'] = ''
+    // return message.channel.send('`Error sending to server. Try again.`')
+  }
 
   let catEmbed = new Discord.RichEmbed()
     .setTitle('Random Cat')
     .setColor('#e01d1d')
-    .setImage(body.file)
 
+  if (cat.file === '') {
+    catEmbed.addField(':cat:', ' ')
+  } else {
+    catEmbed.setImage(cat.file)
+  }
   return message.channel.send(catEmbed)
 }
 

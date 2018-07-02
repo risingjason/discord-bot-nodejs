@@ -2,13 +2,24 @@ const Discord = require('discord.js')
 const superagent = require('superagent')
 
 module.exports.run = async (client, message, args) => {
-  let {body} = await superagent
-    .get('https://random.dog/woof.json')
+  let doggy = {}
+  try {
+    let response = await superagent.get('https://random.dog/woof.json')
+    doggy = response.body
+  } catch (err) {
+    doggy['url'] = ''
+    // return message.channel.send('`Error sending to server. Try again.`')
+  }
 
   let dogEmbed = new Discord.RichEmbed()
     .setTitle('Random Dog')
     .setColor('#e01d1d')
-    .setImage(body.url)
+
+  if (doggy.url === '') {
+    dogEmbed.addField(':dog:', '')
+  } else {
+    dogEmbed.setImage(doggy.url)
+  }
 
   return message.channel.send(dogEmbed)
 }
