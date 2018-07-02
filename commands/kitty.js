@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
     .setColor('#e01d1d')
 
   if (cat.file === '') {
-    catEmbed.addField(':cat:', ' ')
+    catEmbed.addField(':cat:', ':kissing_cat:')
   } else {
     catEmbed.setImage(cat.file)
   }

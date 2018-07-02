@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
     .setColor('#e01d1d')
 
   if (doggy.url === '') {
-    dogEmbed.addField(':dog:', '')
+    dogEmbed.addField(':dog:', ':dog2:')
   } else {
     dogEmbed.setImage(doggy.url)
   }
