@@ -2,7 +2,7 @@ const Discord = require('discord.js')
 const Pokedex = require('pokedex-promise-v2')
 
 const P = new Pokedex()
-const typeColors = require('../extraData/pkmnTypes.json')
+const typeColors = require('../extraData/pkmnData.json').typeColors
 
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {

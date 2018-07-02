@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const osrs = require('osrs-wrapper')
+// const superagent = require('superagent')
 
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {
@@ -18,6 +19,8 @@ module.exports.run = async (client, message, args) => {
       let player = await osrs.hiscores.getPlayer(query)
       return msg.edit(createPlayerEmbed(player.Skills, query))
     } else if (searchWhat === 'item') {
+      // let items = await superagent.get('https://rsbuddy.com/exchange/summary.json')
+      // console.log(items.body)
       let item = await osrs.ge.getItem(query)
       return msg.edit(createItemEmbed(JSON.parse(item).item))
     }
