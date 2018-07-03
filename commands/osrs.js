@@ -31,6 +31,7 @@ module.exports.run = async (client, message, args) => {
       let itemId = findItemIdByName(osrsGE, query)
       let endpoint = `/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemId}`
       let item = await superagent.get(baseURL + endpoint)
+      console.log(item.text)
       return msg.edit(createItemEmbed(JSON.parse(item.text).item))
     } else {
       return msg.edit('`Please enter the right query. ex. !osrs player Name or !osrs item dragon dagger`')
@@ -69,7 +70,7 @@ function createItemEmbed (item) {
     .setDescription(item.description)
     .addField('Members Item', `${item.members.toUpperCase()}`)
     .addField('Price', `${item.current.price} gp`, true)
-    .addField('Today\'s Trend', `${item.today.price.replace(' ', '')} gp`, true)
+    .addField('Today\'s Trend', `${item.today.price} gp`, true)
     .addField('30 Day Trend', `${item.day30.change}`, true)
     .addField('90 Day Trend', `${item.day90.change}`, true)
     .addField('180 Day Trend', `${item.day180.change}`, true)
