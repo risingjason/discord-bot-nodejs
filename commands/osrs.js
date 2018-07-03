@@ -3,6 +3,8 @@ const osrsGE = require('../extraData/osrsData.json')
 const superagent = require('superagent')
 
 const baseURL = 'http://services.runescape.com'
+const wikiSearchURL = 'http://oldschoolrunescape.wikia.com/api/v1/Search/List'
+const wikiIcon = 'https://vignette.wikia.nocookie.net/2007scape/images/8/89/Wiki-wordmark.png'
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {
     return message.channel.send('`Please enter the right query. ex. !osrs player Name or !osrs item dragon dagger`')
@@ -20,23 +22,28 @@ module.exports.run = async (client, message, args) => {
   }
   try {
     if (searchWhat === 'player') {
-      // let player = await osrs.hiscores.getPlayer(query)
       let endpoint = `/m=hiscore_oldschool/index_lite.ws?player=${query}`
       let player = await superagent.get(baseURL + endpoint)
-      // console.log(player.text)
       let hiscore = interpretPlayerScores(player.text)
-      console.log(hiscore)
       return msg.edit(createPlayerEmbed(hiscore.Skills, query))
     } else if (searchWhat === 'item') {
       let itemId = findItemIdByName(osrsGE, query)
       let endpoint = `/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemId}`
       let item = await superagent.get(baseURL + endpoint)
-      console.log(item.text)
       return msg.edit(createItemEmbed(JSON.parse(item.text).item))
+    } else if (searchWhat === 'wiki') {
+      let searches = await superagent.get(wikiSearchURL)
+        .query({ query: query, limit: 5, minArticleQuality: 80 }) // .query('?query=dragon+scim&limit=5&minArticleQuality=80')
+      return msg.edit(createWikiSearchEmbed(JSON.parse(searches.text).items, `Search results for "${query}"`))
     } else {
       return msg.edit('`Please enter the right query. ex. !osrs player Name or !osrs item dragon dagger`')
     }
   } catch (err) {
+    if (searchWhat === 'item') {
+      let searches = await superagent.get(wikiSearchURL)
+        .query({ query: query, limit: 5, minArticleQuality: 80 })
+      return msg.edit(createWikiSearchEmbed(JSON.parse(searches.text).items, 'Item not found in GE. Here are the results on wiki.'))
+    }
     console.log(err)
     return msg.edit('`Item or player not found.`')
   }
@@ -78,6 +85,20 @@ function createItemEmbed (item) {
       `[Wiki Link](http://oldschoolrunescape.wikia.com/wiki/${encoded})\n` +
       `[OSRS GE Graph](http://services.runescape.com/m=itemdb_oldschool/${encoded}/viewitem?obj=${item.id})`
     )
+  return embed
+}
+
+function createWikiSearchEmbed (search, desc) {
+  let embed = new Discord.RichEmbed()
+    .setTitle('Search Results')
+    .setColor('#5b3921')
+    .setThumbnail(wikiIcon)
+    .setDescription(desc)
+
+  for (let i = 0; i < search.length; i++) {
+    embed.addField(`${search[i].title}`, `${search[i].url}`)
+  }
+  // console.log(search)
   return embed
 }
 
