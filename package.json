@@ -22,7 +22,6 @@
   "dependencies": {
     "bufferutil": "^3.0.4",
     "discord.js": "^11.3.2",
-    "osrs-wrapper": "^1.0.4",
     "pokedex-promise-v2": "^3.1.1",
     "superagent": "^3.8.3"
   },

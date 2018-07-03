@@ -4,6 +4,8 @@ const fs = require('fs')
 const client = new Discord.Client()
 client.commands = new Discord.Collection()
 
+const updateOsrs = require('./updateOSRSData.js')
+
 // config file for local testing
 let config = null
 try {
@@ -33,7 +35,7 @@ fs.readdir('./commands/', (err, files) => {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
-
+  updateOsrs.updateGE()
   // set activity
   client.user.setActivity(`${prefix}help`, { type: 'PLAYING' })
 })

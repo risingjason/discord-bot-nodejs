@@ -1,7 +1,8 @@
 const Discord = require('discord.js')
-const osrs = require('osrs-wrapper')
-// const superagent = require('superagent')
+const osrsGE = require('../extraData/osrsData.json')
+const superagent = require('superagent')
 
+const baseURL = 'http://services.runescape.com'
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {
     return message.channel.send('`Please enter the right query. ex. !osrs player Name or !osrs item dragon dagger`')
@@ -12,19 +13,30 @@ module.exports.run = async (client, message, args) => {
   let msg = await message.channel.send('`Searching...`')
   if (args.length !== 0 && args.length !== 1) {
     searchWhat = args.shift()
+    if (args[args.length - 1].toLowerCase() === 'potion') {
+      args[args.length - 1] += '(4)'
+    }
     query = args.join(' ')
   }
   try {
     if (searchWhat === 'player') {
-      let player = await osrs.hiscores.getPlayer(query)
-      return msg.edit(createPlayerEmbed(player.Skills, query))
+      // let player = await osrs.hiscores.getPlayer(query)
+      let endpoint = `/m=hiscore_oldschool/index_lite.ws?player=${query}`
+      let player = await superagent.get(baseURL + endpoint)
+      // console.log(player.text)
+      let hiscore = interpretPlayerScores(player.text)
+      console.log(hiscore)
+      return msg.edit(createPlayerEmbed(hiscore.Skills, query))
     } else if (searchWhat === 'item') {
-      // let items = await superagent.get('https://rsbuddy.com/exchange/summary.json')
-      // console.log(items.body)
-      let item = await osrs.ge.getItem(query)
-      return msg.edit(createItemEmbed(JSON.parse(item).item))
+      let itemId = findItemIdByName(osrsGE, query)
+      let endpoint = `/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemId}`
+      let item = await superagent.get(baseURL + endpoint)
+      return msg.edit(createItemEmbed(JSON.parse(item.text).item))
+    } else {
+      return msg.edit('`Please enter the right query. ex. !osrs player Name or !osrs item dragon dagger`')
     }
   } catch (err) {
+    console.log(err)
     return msg.edit('`Item or player not found.`')
   }
 }
@@ -43,7 +55,7 @@ function createPlayerEmbed (player, name) {
     // .setThumbnail(logoLink)
   for (let skill of Object.keys(player)) {
     let current = player[skill]
-    embed.addField(`${skill}`, `Rank: ${current.rank}\nLevel: ${current.level}\nXP: ${current.xp}`, true)
+    embed.addField(`${skill}`, `Rank: ${current.Rank}\nLevel: ${current.Level}\nXP: ${current.XP}`, true)
   }
   return embed
 }
@@ -66,6 +78,56 @@ function createItemEmbed (item) {
       `[OSRS GE Graph](http://services.runescape.com/m=itemdb_oldschool/${encoded}/viewitem?obj=${item.id})`
     )
   return embed
+}
+
+function interpretPlayerScores (data) {
+  let skills = data.split('\n')
+  // removes last empty entry
+  skills.pop()
+  let numbers = []
+  skills.forEach(element => {
+    let nums = element.split(',')
+    numbers.push(nums)
+  })
+  let scoreKeys = {
+    Skills: ['Overall', 'Attack', 'Defence', 'Strength', 'Hitpoints', 'Ranged', 'Prayer', 'Magic', 'Cooking',
+      'Woodcutting', 'Fletching', 'Fishing', 'Firemaking', 'Crafting', 'Smithing', 'Mining', 'Herblore', 'Agility',
+      'Thieving', 'Slayer', 'Farming', 'Runecraft', 'Hunter', 'Construction'],
+    Minigame: ['Clue Scrolls (easy)', 'Clue Scrolls (medium)', 'Clue Scrolls (all)', 'Bounty Hunter - Rogue',
+      'Bounty Hunter - Hunter', 'Clue Scrolls (hard)', 'LMS - Rank', 'Clue Scrolls (elite)', 'Clue Scrolls (master)']
+  }
+  let result = { Skills: getSkillData(scoreKeys.Skills, numbers), Minigame: getMinigameData(scoreKeys.Minigame, numbers) }
+  return result
+}
+// 24
+function getSkillData (emptySkills, data) {
+  let result = {}
+  for (let i = 0; i < emptySkills.length; i++) {
+    result[emptySkills[i]] = {
+      Rank: data[i][0],
+      Level: data[i][1],
+      XP: data[i][2]
+    }
+  }
+  return result
+}
+
+function getMinigameData (emptyMinigames, data) {
+  let result = {}
+  let idx = 24
+  for (let i = 0; i < emptyMinigames.length; i++, idx++) {
+    if (data[idx][0] !== '-1') {
+      result[emptyMinigames[i]] = {
+        Rank: data[idx][0],
+        Score: data[idx][1]
+      }
+    }
+  }
+  return result
+}
+
+function findItemIdByName (object, value) {
+  return Object.keys(object).find(key => object[key].toLowerCase() === value.toLowerCase())
 }
 
 // source from
