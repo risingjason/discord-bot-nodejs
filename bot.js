@@ -35,7 +35,8 @@ fs.readdir('./commands/', (err, files) => {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
-  updateOsrs.updateGE()
+  // check for updates when not testing locally
+  if (!config) updateOsrs.updateGE()
   // set activity
   client.user.setActivity(`${prefix}help`, { type: 'PLAYING' })
 })
