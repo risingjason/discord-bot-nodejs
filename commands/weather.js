@@ -14,27 +14,44 @@ try {
 // search by city name
 // http://api.openweathermap.org/data/2.5/weather?q=Los%20Angeles&appid=
 module.exports.run = async (client, message, args) => {
-  let city = args.length === 0 ? 'los angeles' : args.join(' ')
   let apiKey = config ? config.weatherAPIkey : process.env.WEATHER_API_KEY
+  let baseWeatherURL = 'api.openweathermap.org/data/2.5/weather'
+  let baseForecastURL = 'api.openweathermap.org/data/2.5/forecast'
+  let msg = await message.channel.send('`Searching...`')
   let searchQueries = {
-    q: city,
     appid: apiKey,
     units: 'imperial'
   }
-  let msg = await message.channel.send('`Searching...`')
   try {
-    let response = await superagent.get('api.openweathermap.org/data/2.5/weather')
-      .query(searchQueries)
+    let response
+    if (args[0] === 'daily') {
+      if (args[1] === 'city') {
+        let city = args.length < 3 ? 'los angeles' : args.slice(2).join(' ')
+        searchQueries['q'] = city
+        response = await superagent.get(baseWeatherURL)
+          .query(searchQueries)
+      } else if (args[1] === 'zip') {
+        let zip = args.length < 3 ? '90012' : args.slice(2).join(' ').trim()
+        searchQueries['zip'] = zip
+        response = await superagent.get(baseWeatherURL)
+          .query(searchQueries)
+      }
+    } else if (args[0] === 'forecast') {
+      // code here
+    } else {
+      return msg.edit('`You\'ve typed in the wrong parameters. ex. !weather daily city Los Angeles`')
+    }
     let weather = JSON.parse(response.text)
     return msg.edit(createWeatherEmbed(weather))
   } catch (err) {
+    console.log(err)
     return msg.edit('`Error occured. Please check for spelling errors.`')
   }
 }
 
 module.exports.help = {
   name: 'weather',
-  parameters: '<city>',
+  parameters: '<daily/forecast> <city/zip> <location>',
   descShort: 'Look up the weather based on location.'
 }
 
