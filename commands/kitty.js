@@ -8,7 +8,9 @@ module.exports.run = async (client, message, args) => {
     cat = response.body
   } catch (err) {
     cat['file'] = ''
-    // return message.channel.send('`Error sending to server. Try again.`')
+    if (err.status === 403) {
+      return message.channel.send('`Sorry :( the random.cat API is down right now or there are too many requests to the server from us.`')
+    }
   }
 
   let catEmbed = new Discord.RichEmbed()

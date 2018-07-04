@@ -41,18 +41,18 @@ client.on('ready', () => {
   client.user.setActivity(`${prefix}help`, { type: 'PLAYING' })
 })
 
-client.on('guildMemberAdd', async (member) => {
+client.on('guildMemberAdd', (member) => {
   let generalChannel = member.guild.channels.find(`name`, 'general')
   generalChannel.send(`Welcome! ${member} has joined **${member.guild.name}.**`)
 })
 
-client.on('guildMemberRemove', async (member) => {
+client.on('guildMemberRemove', (member) => {
   let generalChannel = member.guild.channels.find(`name`, 'general')
   generalChannel.send(`Goodbye! ${member} has left **${member.guild.name}.**`)
 })
 // goes through the commands handler and if command exists,
 // the bot will run that module in the commands folder
-client.on('message', async (message) => {
+client.on('message', (message) => {
   // make sure no recursive messages
   if (message.author.bot) return
   if (message.channel.type === 'dm') return
@@ -71,7 +71,7 @@ client.on('message', async (message) => {
     // removes the prefix symbol and checks if command exists for the bot
     let commandExists = client.commands.get(command.slice(prefix.length))
     if (commandExists) {
-      commandExists.run(client, message, args)
+      return commandExists.run(client, message, args)
     }
   }
 })

@@ -89,29 +89,45 @@ function createForecastEmbed (forecast) {
   let embed = new Discord.RichEmbed()
     .setColor('#6dc4ff')
     .setTitle(`5 Day Forecast for ${forecast.city.name} :flag_${country}:`)
-  const timeString = '12:00:00'
+  const timeString = ['09:00:00', '15:00:00', '21:00:00']
 
   // get daily weather at noon
   let noonWeather = []
   for (const element of forecast.list) {
     const date = element.dt_txt
     const time = date.split(' ')
-    if (time[1] === timeString) {
+    if (noonWeather.length > 9) break
+    if (timeString.includes(time[1])) {
       noonWeather.push(element)
     }
   }
 
   for (const day of noonWeather) {
-    const onlyDate = day.dt_txt.split(' ')[0]
+    const splitDate = day.dt_txt.split(' ')
     const temp = day.main.temp + ' ℉'
     const wind = day.wind.speed + ' mph'
     const desc = capFirstLetter(day.weather[0].description)
-    embed.addField(`${formatDate(onlyDate)}`,
+    embed.addField(`${formatDate(splitDate[0])} ${formatTime(splitDate[1])}`,
       `Temperature :thermometer: ${temp}\n` +
       `Wind Speed :dash: ${wind}\n` +
       `${desc}`, true)
   }
   return embed
+}
+
+function formatTime (time) {
+  let splitTime = time.split(':').shift()
+  let ampm = ''
+  if (splitTime.substring(0, 1) === '0') {
+    splitTime = splitTime.slice(1)
+  }
+  if (parseInt(splitTime) > 12) {
+    ampm = 'PM'
+    splitTime -= 12
+  } else {
+    ampm = 'AM'
+  }
+  return splitTime + ampm
 }
 
 function formatDate (date) {
