@@ -29,7 +29,7 @@ function calcDelay (client, message, args) {
   let delay = 0
   let time = parseInt(args[0])
   if (!args || args.length === 0) {
-    message.channel.send(`Please put valid arguments. ex. ${process.env.PREFIX || '!'}poll 1 Should I buy milk?`)
+    message.channel.send(`\`Please put valid arguments. ex. ${process.env.PREFIX || '!'}poll 1 Should I buy milk?\``)
   } else { // find delay
     if (typeof time === 'number' && time % 1 === 0) {
       if (time < 1) {

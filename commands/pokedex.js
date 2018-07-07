@@ -6,7 +6,7 @@ const typeColors = require('../extraData/pkmnData.json').typeColors
 
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {
-    return message.channel.send(`Please enter a pokemon name or pokedex number. ex. ${process.env.PREFIX || '!'}pokedex pkmn charizard`)
+    return message.channel.send(`\`Please enter a pokemon name or pokedex number. ex. ${process.env.PREFIX || '!'}pokedex pkmn charizard\``)
   }
   let thingToFind = args[0].toLowerCase()
   let whoToFind = args[1].toLowerCase()
