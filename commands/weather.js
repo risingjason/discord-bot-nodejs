@@ -33,7 +33,7 @@ module.exports.run = async (client, message, args) => {
     } else if (args[0] === 'forecast' || args[0] === 'f') {
       forecast = true
     } else {
-      return msg.edit(`\`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather daily city Los Angeles\``)
+      return msg.edit(`\`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather daily Los Angeles --country US\``)
     }
 
     const params = args.slice(1)
@@ -45,7 +45,7 @@ module.exports.run = async (client, message, args) => {
         params.splice(findCountryFlag, 1)
         country = params.pop()
       } else {
-        return msg.edit(`\`No country code detected. ex. ${process.env.PREFIX || '!'}weather daily Los Angeles US.\``)
+        return msg.edit(`\`No country code detected. ex. ${process.env.PREFIX || '!'}weather daily Los Angeles --country US\``)
       }
     }
     const location = params.length !== 0 ? params.join(' ') : 'Los Angeles'
