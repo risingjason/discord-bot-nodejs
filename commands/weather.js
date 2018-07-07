@@ -9,63 +9,81 @@ try {
   console.log('Config not found.')
 }
 
+const apiKey = config ? config.weatherAPIkey : process.env.WEATHER_API_KEY
+const baseWeatherURL = 'api.openweathermap.org/data/2.5/weather'
+const baseForecastURL = 'api.openweathermap.org/data/2.5/forecast'
+
 // search by zip code
 // api.openweathermap.org/data/2.5/weather?zip={zip code},{country code}
 // search by city name
 // http://api.openweathermap.org/data/2.5/weather?q=Los%20Angeles&appid=
 module.exports.run = async (client, message, args) => {
-  let apiKey = config ? config.weatherAPIkey : process.env.WEATHER_API_KEY
-  let baseWeatherURL = 'api.openweathermap.org/data/2.5/weather'
-  let baseForecastURL = 'api.openweathermap.org/data/2.5/forecast'
   let msg = await message.channel.send('`Searching...`')
   let searchQueries = {
     appid: apiKey,
     units: 'imperial'
   }
+  if (args.length < 1) {
+    return msg.edit(`\`Please enter some parameters. ex. ${process.env.PREFIX || '!'}weather ${this.help.parameters}\``)
+  }
   try {
-    let response
+    let forecast
     if (args[0] === 'daily' || args[0] === 'd') {
-      if (args[1] === 'city') {
-        let city = args.length < 3 ? 'los angeles' : args.slice(2).join(' ')
-        searchQueries['q'] = city
-        response = await superagent.get(baseWeatherURL)
-          .query(searchQueries)
-      } else if (args[1] === 'zip') {
-        let zip = args.length < 3 ? '90012' : args.slice(2).join(' ').trim()
-        searchQueries['zip'] = zip
-        response = await superagent.get(baseWeatherURL)
-          .query(searchQueries)
-      } else {
-        return msg.edit(`\`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather daily city Los Angeles\``)
-      }
-      let weather = JSON.parse(response.text)
-      return msg.edit(createWeatherEmbed(weather))
+      forecast = false
     } else if (args[0] === 'forecast' || args[0] === 'f') {
-      if (args[1] === 'city') {
-        let city = args.length < 3 ? 'los angeles' : args.slice(2).join(' ')
-        searchQueries['q'] = city
-        response = await superagent.get(baseForecastURL)
-          .query(searchQueries)
-      } else if (args[1] === 'zip') {
-
-      } else {
-        return msg.edit(`\`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather forecast city Los Angeles\``)
-      }
-      let forecast = JSON.parse(response.text)
-      return msg.edit(createForecastEmbed(forecast))
+      forecast = true
     } else {
       return msg.edit(`\`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather daily city Los Angeles\``)
     }
+
+    const params = args.slice(1)
+    const findCountryFlag = params.indexOf('--country')
+    let country = 'US'
+    // user puts country code
+    if (findCountryFlag !== -1) {
+      if (params[findCountryFlag + 1]) {
+        params.splice(findCountryFlag, 1)
+        country = params.pop()
+      } else {
+        return msg.edit(`\`No country code detected. ex. ${process.env.PREFIX || '!'}weather daily Los Angeles US.\``)
+      }
+    }
+    const location = params.length !== 0 ? params.join(' ') : 'Los Angeles'
+    // check if city or zip
+    if (isNaN(parseInt(params[0]))) {
+      searchQueries['q'] = location + ',' + country
+    } else {
+      searchQueries['zip'] = location + ',' + country
+    }
+    let weather = await getResponse(searchQueries, forecast)
+    return msg.edit(forecast ? createForecastEmbed(weather) : createWeatherEmbed(weather))
   } catch (err) {
     console.log(err)
-    return msg.edit('`Error occured. Please check for spelling errors.`')
+    return msg.edit('`Error occured. City not found. Please specify country codes for non US cities.`')
   }
 }
 
 module.exports.help = {
   name: 'weather',
-  parameters: '<daily/forecast> <city/zip> <location>',
-  descShort: 'Look up the weather based on location or US zip code.'
+  parameters: '<daily/forecast> <city/zip> [--country <country_code>]',
+  descShort: 'Look up the weather based on location or zip code. If there is no country code specified, then it will default to US.'
+}
+
+async function getResponse (queries, forecast) {
+  let response
+  try {
+    if (forecast) {
+      response = await superagent.get(baseForecastURL)
+        .query(queries)
+    } else {
+      response = await superagent.get(baseWeatherURL)
+        .query(queries)
+    }
+  } catch (err) {
+    console.log(err.error.text)
+    return JSON.parse(err)
+  }
+  return JSON.parse(response.text)
 }
 
 function createWeatherEmbed (weather) {
@@ -88,26 +106,27 @@ function createForecastEmbed (forecast) {
   const country = forecast.city.country.toLowerCase()
   let embed = new Discord.RichEmbed()
     .setColor('#6dc4ff')
-    .setTitle(`5 Day Forecast for ${forecast.city.name} :flag_${country}:`)
+    .setTitle(`3 Day Forecast for ${forecast.city.name} :flag_${country}:`)
   const timeString = ['09:00:00', '15:00:00', '21:00:00']
-
-  // get daily weather at noon
-  let noonWeather = []
+  const emojis = [':city_sunrise:', ':city_dusk:', ':night_with_stars:']
+  // get daily weather at timeString hours
+  let weatherTime = []
   for (const element of forecast.list) {
     const date = element.dt_txt
     const time = date.split(' ')
-    if (noonWeather.length > 9) break
+    if (weatherTime.length > 9) break
     if (timeString.includes(time[1])) {
-      noonWeather.push(element)
+      weatherTime.push(element)
     }
   }
 
-  for (const day of noonWeather) {
+  for (const day of weatherTime) {
     const splitDate = day.dt_txt.split(' ')
     const temp = day.main.temp + ' ℉'
     const wind = day.wind.speed + ' mph'
     const desc = capFirstLetter(day.weather[0].description)
-    embed.addField(`${formatDate(splitDate[0])} ${formatTime(splitDate[1])}`,
+    const emoji = emojis[timeString.indexOf(splitDate[1])]
+    embed.addField(`${formatDate(splitDate[0])} ${formatTime(splitDate[1])} ${emoji}`,
       `Temperature :thermometer: ${temp}\n` +
       `Wind Speed :dash: ${wind}\n` +
       `${desc}`, true)
