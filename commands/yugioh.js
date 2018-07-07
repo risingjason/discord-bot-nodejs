@@ -4,7 +4,7 @@ const yugiohData = require('../extraData/yugiohData.json')
 
 module.exports.run = async (client, message, args) => {
   if (args.length === 0) {
-    return message.channel.send('`Please put a card name to search. ex. !yugioh ash blossom & joyous spring`')
+    return message.channel.send(`Please put a card name to search. ex. ${process.env.PREFIX || '!'}yugioh ash blossom & joyous spring`)
   }
   let query = encodeURIComponent(args.join(' '))
   let msg = await message.channel.send('`Searching...`')

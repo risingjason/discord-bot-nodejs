@@ -36,7 +36,7 @@ module.exports.run = async (client, message, args) => {
         response = await superagent.get(baseWeatherURL)
           .query(searchQueries)
       } else {
-        return msg.edit('`You\'ve typed in the wrong parameters. ex. !weather daily city Los Angeles`')
+        return msg.edit(`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather daily city Los Angeles`)
       }
       let weather = JSON.parse(response.text)
       return msg.edit(createWeatherEmbed(weather))
@@ -49,12 +49,12 @@ module.exports.run = async (client, message, args) => {
       } else if (args[1] === 'zip') {
 
       } else {
-        return msg.edit('`You\'ve typed in the wrong parameters. ex. !weather forecast city Los Angeles`')
+        return msg.edit(`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather forecast city Los Angeles`)
       }
       let forecast = JSON.parse(response.text)
       return msg.edit(createForecastEmbed(forecast))
     } else {
-      return msg.edit('`You\'ve typed in the wrong parameters. ex. !weather daily city Los Angeles`')
+      return msg.edit(`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather daily city Los Angeles`)
     }
   } catch (err) {
     console.log(err)

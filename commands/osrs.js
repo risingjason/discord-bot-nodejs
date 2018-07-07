@@ -7,7 +7,7 @@ const wikiSearchURL = 'http://oldschoolrunescape.wikia.com/api/v1/Search/List'
 const wikiIcon = 'https://vignette.wikia.nocookie.net/2007scape/images/8/89/Wiki-wordmark.png'
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {
-    return message.channel.send('`Please enter the right query. ex. !osrs player Name or !osrs item dragon dagger`')
+    return message.channel.send(`Please enter the right query. ex. ${process.env.PREFIX || '!'}osrs player Name or !osrs item dragon dagger`)
   }
 
   let searchWhat = null
@@ -36,7 +36,7 @@ module.exports.run = async (client, message, args) => {
         .query({ query: query, limit: 5, minArticleQuality: 80 }) // .query('?query=dragon+scim&limit=5&minArticleQuality=80')
       return msg.edit(createWikiSearchEmbed(JSON.parse(searches.text).items, `Search results for "${query}"`))
     } else {
-      return msg.edit('`Please enter the right query. ex. !osrs player Name or !osrs item dragon dagger`')
+      return msg.edit(`Please enter the right query. ex. ${process.env.PREFIX || '!'}osrs player Name or ${process.env.PREFIX || '!'}osrs item dragon dagger`)
     }
   } catch (err) {
     if (searchWhat === 'item') {
