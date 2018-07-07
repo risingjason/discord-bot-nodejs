@@ -1,7 +1,11 @@
 const Discord = require('discord.js')
 const superagent = require('superagent')
 const yugiohData = require('../extraData/yugiohData.json')
+const helper = require('../helper.js')
 
+const yugipediaLink = 'https://yugipedia.com/wiki/'
+const ygoHubLink = 'https://www.ygohub.com/api/card_info'
+const yugiohWikiLink = 'http://yugioh.wikia.com/api/v1/Search/List'
 module.exports.run = async (client, message, args) => {
   if (args.length === 0) {
     return message.channel.send(`\`Please put a card name to search. ex. ${process.env.PREFIX || '!'}yugioh ash blossom & joyous spring\``)
@@ -11,14 +15,16 @@ module.exports.run = async (client, message, args) => {
 
   let response = null
   try {
-    response = await superagent.get(`https://www.ygohub.com/api/card_info?name=${query}`)
+    response = await superagent.get(ygoHubLink)
+      .query(`name=${query}`)
     response = JSON.parse(response.text)
   } catch (err) {
     return msg.edit('`Error while searching.`')
   }
 
   if (response.status !== 'success') {
-    return msg.edit('`The card you searched was not found. Please type the card exactly word for word.`')
+    let cardName = helper.capFirstLetter(args.join(' '))
+    return msg.edit(await createCardNotFoundEmbed(cardName))
   }
 
   let cardInfo = response.card
@@ -71,6 +77,24 @@ function createYugiohEmbed (cardInfo) {
 
   embed.addField('Legality', `${cardInfo.legality.TCG.Advanced}`, true)
     .addField('Links', `[TCGPlayer](${cardInfo.tcgplayer_link})`)
+
+  return embed
+}
+
+async function createCardNotFoundEmbed (card) {
+  let embed = new Discord.RichEmbed()
+    .setTitle('Your card was not found on the YGOHub API. Here are some links instead.')
+    .setColor('#207868')
+  let wikiResponse
+  try {
+    wikiResponse = await superagent.get(yugiohWikiLink)
+      .query({ query: card, limit: 1, minArticleQuality: 80 })
+  } catch (err) {
+    console.log(err.error.text)
+  }
+  const wikiInfo = JSON.parse(wikiResponse.text)
+  embed.addField('Yugioh Wikia Link', `${wikiInfo.items[0].url}`)
+    .addField('Yugipedia Link', yugipediaLink + helper.replaceAll(wikiInfo.items[0].title, ' ', '_'))
 
   return embed
 }
