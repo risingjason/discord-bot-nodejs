@@ -57,10 +57,10 @@ function calcVotes (client, message, args) {
     question.splice(question.length, 0, '`')
   }
   if (thumbsUp > thumbsDown) {
-    message.channel.send(':white_check_mark:  **VOTE YES PASSED**  :white_check_mark: ' + question.join(' '))
+    message.channel.send(':white_check_mark:  **POLL PASSED**  :white_check_mark: ' + question.join(' '))
   } else if (thumbsUp === thumbsDown) {
-    message.channel.send(':ballot_box:  **VOTE TIED**  :ballot_box: ' + question.join(' '))
+    message.channel.send(':ballot_box:  **POLL TIED**  :ballot_box: ' + question.join(' '))
   } else {
-    message.channel.send(':no_entry_sign:  **VOTE NO PASSED**  :no_entry_sign: ' + question.join(' '))
+    message.channel.send(':no_entry_sign:  **POLL NOT PASSED**  :no_entry_sign: ' + question.join(' '))
   }
 }
