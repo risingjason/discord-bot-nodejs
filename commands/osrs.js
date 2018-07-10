@@ -1,11 +1,13 @@
 const Discord = require('discord.js')
 const osrsGE = require('../extraData/geData.json')
+const osrsData = require('../extraData/osrsData.json')
 const superagent = require('superagent')
+const helper = require('../helper.js')
 
+const flags = Object.keys(osrsData.flags)
 const baseURL = 'http://services.runescape.com'
 const wikiSearchURL = 'http://oldschoolrunescape.wikia.com/api/v1/Search/List'
 const wikiIcon = 'https://vignette.wikia.nocookie.net/2007scape/images/8/89/Wiki-wordmark.png'
-const hiscoreEndpoint = '/m=hiscore_oldschool/index_lite.ws'
 const geEndpoint = '/m=itemdb_oldschool/api/catalogue/detail.json'
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {
@@ -24,10 +26,19 @@ module.exports.run = async (client, message, args) => {
   }
   try {
     if (searchWhat === 'player') {
+      let hiscoreEndpoint = osrsData.flags['--normal']
+      query = query.split(' ')
+      for (let i = 0; i < query.length; i++) {
+        if (flags.includes(query[i])) {
+          hiscoreEndpoint = osrsData.flags[query[i]]
+          query.splice(i, 1)
+        }
+      }
+      const name = helper.capFirstLetter(query.join(' '))
       const player = await superagent.get(baseURL + hiscoreEndpoint)
-        .query({ player: query })
+        .query({ player: name })
       const hiscore = interpretPlayerScores(player.text)
-      return msg.edit(createPlayerEmbed(hiscore.Skills, query))
+      return msg.edit(createPlayerEmbed(hiscore.Skills, name))
     } else if (searchWhat === 'item') {
       const itemId = findItemIdByName(osrsGE, query)
       const item = await superagent.get(baseURL + geEndpoint)
@@ -100,7 +111,6 @@ function createWikiSearchEmbed (search, desc) {
   for (let i = 0; i < search.length; i++) {
     embed.addField(`${search[i].title}`, `${search[i].url}`)
   }
-  // console.log(search)
   return embed
 }
 

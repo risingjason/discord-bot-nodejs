@@ -1,0 +1,10 @@
+{
+  "flags": {
+    "--ironman": "/m=hiscore_oldschool_ironman/index_lite.ws",
+    "--hardcore": "/m=hiscore_oldschool_hardcore_ironman/index_lite.ws",
+    "--ultimate": "/m=hiscore_oldschool_ultimate/index_lite.ws",
+    "--deadman": "/m=hiscore_oldschool_deadman/index_lite.ws",
+    "--seasonal": "/m=hiscore_oldschool_seasonal/index_lite.ws",
+    "--normal": "/m=hiscore_oldschool/index_lite.ws"
+  }
+}

@@ -1,6 +1,6 @@
 const Discord = require('discord.js')
 const superagent = require('superagent')
-
+const helper = require('../helper.js')
 // config file for local testing
 let config = null
 try {
@@ -80,7 +80,7 @@ async function getResponse (queries, forecast) {
         .query(queries)
     }
   } catch (err) {
-    console.log(err.error.text)
+    console.log(err.error)
     return JSON.parse(err)
   }
   return JSON.parse(response.text)
@@ -124,7 +124,7 @@ function createForecastEmbed (forecast) {
     const splitDate = day.dt_txt.split(' ')
     const temp = day.main.temp + ' ℉'
     const wind = day.wind.speed + ' mph'
-    const desc = capFirstLetter(day.weather[0].description)
+    const desc = helper.capFirstLetter(day.weather[0].description)
     const emoji = emojis[timeString.indexOf(splitDate[1])]
     embed.addField(`${formatDate(splitDate[0])} ${formatTime(splitDate[1])} ${emoji}`,
       `Temperature :thermometer: ${temp}\n` +
@@ -178,21 +178,5 @@ function formatDate (date) {
   const suffix = days[dateObj.Day.slice(-1)] || 'th'
   const removeZero = dateObj.Day.substring(0, 1) === '0' ? dateObj.Day.slice(-1) : dateObj.Day
   const result = months[dateObj.Month] + ' ' + removeZero + suffix + ', ' + dateObj.Year
-  return result
-}
-
-function capFirstLetter (str) {
-  let words = str.split(' ')
-  let newWords = []
-  let result = ''
-  if (words.length > 1) {
-    for (let word of words) {
-      const newWord = word.substring(0, 1).toUpperCase() + word.substring(1)
-      newWords.push(newWord)
-    }
-    result = newWords.join(' ')
-  } else {
-    result = str.substring(0, 1).toUpperCase() + str.substring(1)
-  }
   return result
 }
