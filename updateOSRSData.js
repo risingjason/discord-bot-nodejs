@@ -1,6 +1,6 @@
 const superagent = require('superagent')
 const fs = require('fs')
-const file = './extraData/osrsData.json'
+const file = './extraData/geData.json'
 
 module.exports.updateGE = async () => {
   let items = await superagent.get('https://rsbuddy.com/exchange/summary.json')

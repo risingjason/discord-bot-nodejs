@@ -1,10 +1,12 @@
 const Discord = require('discord.js')
-const osrsGE = require('../extraData/osrsData.json')
+const osrsGE = require('../extraData/geData.json')
 const superagent = require('superagent')
 
 const baseURL = 'http://services.runescape.com'
 const wikiSearchURL = 'http://oldschoolrunescape.wikia.com/api/v1/Search/List'
 const wikiIcon = 'https://vignette.wikia.nocookie.net/2007scape/images/8/89/Wiki-wordmark.png'
+const hiscoreEndpoint = '/m=hiscore_oldschool/index_lite.ws'
+const geEndpoint = '/m=itemdb_oldschool/api/catalogue/detail.json'
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {
     return message.channel.send(`\`Please enter the right query. ex. ${process.env.PREFIX || '!'}osrs player Name or !osrs item dragon dagger\``)
@@ -22,17 +24,17 @@ module.exports.run = async (client, message, args) => {
   }
   try {
     if (searchWhat === 'player') {
-      let endpoint = `/m=hiscore_oldschool/index_lite.ws?player=${query}`
-      let player = await superagent.get(baseURL + endpoint)
-      let hiscore = interpretPlayerScores(player.text)
+      const player = await superagent.get(baseURL + hiscoreEndpoint)
+        .query({ player: query })
+      const hiscore = interpretPlayerScores(player.text)
       return msg.edit(createPlayerEmbed(hiscore.Skills, query))
     } else if (searchWhat === 'item') {
-      let itemId = findItemIdByName(osrsGE, query)
-      let endpoint = `/m=itemdb_oldschool/api/catalogue/detail.json?item=${itemId}`
-      let item = await superagent.get(baseURL + endpoint)
+      const itemId = findItemIdByName(osrsGE, query)
+      const item = await superagent.get(baseURL + geEndpoint)
+        .query({ item: itemId })
       return msg.edit(createItemEmbed(JSON.parse(item.text).item))
     } else if (searchWhat === 'wiki') {
-      let searches = await superagent.get(wikiSearchURL)
+      const searches = await superagent.get(wikiSearchURL)
         .query({ query: query, limit: 5, minArticleQuality: 80 }) // .query('?query=dragon+scim&limit=5&minArticleQuality=80')
       return msg.edit(createWikiSearchEmbed(JSON.parse(searches.text).items, `Search results for "${query}"`))
     } else {
@@ -40,7 +42,7 @@ module.exports.run = async (client, message, args) => {
     }
   } catch (err) {
     if (searchWhat === 'item') {
-      let searches = await superagent.get(wikiSearchURL)
+      const searches = await superagent.get(wikiSearchURL)
         .query({ query: query, limit: 5, minArticleQuality: 80 })
       return msg.edit(createWikiSearchEmbed(JSON.parse(searches.text).items, 'Item not found in GE. Here are the results on wiki.'))
     }
