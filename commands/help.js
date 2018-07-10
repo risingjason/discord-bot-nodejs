@@ -27,7 +27,7 @@ module.exports.help = {
 
 // used for when regular !help is called
 function generalHelp (client, message) {
-  let botIcon = client.user.displayAvatarURL
+  const botIcon = client.user.displayAvatarURL
   let helpMessage = new Discord.RichEmbed()
     .setTitle('Welcome to Chinatown Discord Bot! :mahjong:')
     .setDescription('Here are a list of usable commands.')
@@ -35,8 +35,8 @@ function generalHelp (client, message) {
     .setThumbnail(botIcon)
     .setFooter('Created by Jason Yatfai Zhang.')
 
-  let prefix = config ? config.prefix : process.env.PREFIX
-  for (let [cmdName, cmdFull] of client.commands) {
+  const prefix = config ? config.prefix : process.env.PREFIX
+  for (const [cmdName, cmdFull] of client.commands) {
     helpMessage.addField(prefix + cmdName + '  ' + cmdFull.help.parameters, cmdFull.help.descShort)
   }
   return helpMessage

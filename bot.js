@@ -20,13 +20,13 @@ const prefix = config ? config.prefix : process.env.PREFIX
 fs.readdir('./commands/', (err, files) => {
   if (err) console.log(err)
 
-  let jsFile = files.filter(f => f.split('.').pop() === 'js')
+  const jsFile = files.filter(f => f.split('.').pop() === 'js')
   if (jsFile.length <= 0) {
     console.log('Couldn\'t find commands.')
   }
 
   jsFile.forEach((f, i) => {
-    let props = require(`./commands/${f}`)
+    const props = require(`./commands/${f}`)
     // console.log(`${f} loaded!`)
     // setting the command name based on the help module
     client.commands.set(props.help.name, props)
