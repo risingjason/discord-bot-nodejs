@@ -12,7 +12,7 @@ module.exports.run = async (client, message, args) => {
   }
   let query = encodeURIComponent(args.join(' '))
   let msg = await message.channel.send('`Searching...`')
-
+  const searchWhat = args[1]
   let response = null
   try {
     response = await superagent.get(ygoHubLink)
@@ -88,13 +88,18 @@ async function createCardNotFoundEmbed (card) {
   let wikiResponse
   try {
     wikiResponse = await superagent.get(yugiohWikiLink)
-      .query({ query: card, limit: 1, minArticleQuality: 80 })
+      .query({ query: card, limit: 3, minArticleQuality: 80 })
   } catch (err) {
     console.log(err.error.text)
   }
   const wikiInfo = JSON.parse(wikiResponse.text)
-  embed.addField('Yugioh Wikia Link', `${wikiInfo.items[0].url}`)
-    .addField('Yugipedia Link', yugipediaLink + helper.replaceAll(wikiInfo.items[0].title, ' ', '_'))
+  console.log(wikiInfo)
+  for (const link of wikiInfo.items) {
+    embed.addField(`${link.title}`, `${link.url}`)
+  }
+  // embed.addField('Yugioh Wikia Link', `${wikiInfo.items[0].url}`)
+  // .addField('Yugipedia Link', yugipediaLink + helper.replaceAll(wikiInfo.items[0].title, ' ', '_'))
+  // disabled yugipedia link since it would not be 100% accurate.
 
   return embed
 }
