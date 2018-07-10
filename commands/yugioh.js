@@ -3,7 +3,7 @@ const superagent = require('superagent')
 const yugiohData = require('../extraData/yugiohData.json')
 const helper = require('../helper.js')
 
-const yugipediaLink = 'https://yugipedia.com/wiki/'
+// const yugipediaLink = 'https://yugipedia.com/wiki/'
 const ygoHubLink = 'https://www.ygohub.com/api/card_info'
 const yugiohWikiLink = 'http://yugioh.wikia.com/api/v1/Search/List'
 module.exports.run = async (client, message, args) => {
@@ -12,7 +12,6 @@ module.exports.run = async (client, message, args) => {
   }
   let query = encodeURIComponent(args.join(' '))
   let msg = await message.channel.send('`Searching...`')
-  const searchWhat = args[1]
   let response = null
   try {
     response = await superagent.get(ygoHubLink)
