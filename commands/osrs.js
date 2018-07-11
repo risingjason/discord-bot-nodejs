@@ -22,6 +22,8 @@ module.exports.run = async (client, message, args) => {
     let [last] = query.slice(-1)
     if (last.toLowerCase() === 'potion') {
       query[query.length - 1] += '(4)'
+    } else if (last.toLowerCase() === 'mix') {
+      query[query.length - 1] += '(2)'
     }
   }
 
