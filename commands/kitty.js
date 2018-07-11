@@ -4,8 +4,8 @@ const superagent = require('superagent')
 module.exports.run = async (client, message, args) => {
   let cat = {}
   try {
-    let response = await superagent.get('http://aws.random.cat/meow')
-    cat = response.body
+    let { body } = await superagent.get('http://aws.random.cat/meow')
+    cat = body
   } catch (err) {
     cat['file'] = ''
     if (err.status === 403) {
