@@ -10,9 +10,9 @@ module.exports.run = async (client, message, args) => {
   if (args.length === 0) {
     return message.channel.send(`\`Please put a card name to search. ex. ${process.env.PREFIX || '!'}yugioh ash blossom & joyous spring\``)
   }
-  let query = encodeURIComponent(args.join(' '))
+  const query = encodeURIComponent(args.join(' '))
   let msg = await message.channel.send('`Searching...`')
-  let response = null
+  let response
   try {
     response = await superagent.get(ygoHubLink)
       .query(`name=${query}`)
@@ -54,7 +54,7 @@ function createYugiohEmbed (cardInfo) {
     }
     if (cardInfo.is_link) {
       let arrows = []
-      for (let arrow of cardInfo.link_markers) {
+      for (const arrow of cardInfo.link_markers) {
         arrows.push(yugiohData.link_arrows[arrow])
       }
       embed.addField('Link Rating', cardInfo.link_number, true)
@@ -65,8 +65,8 @@ function createYugiohEmbed (cardInfo) {
         .addField('Pendulum Effect', cardInfo.pendulum_text)
     }
     // Normal monsters do not have effects, Fusion Normal monster have cardInfo.text but no actual effect
-    let isNormal = cardInfo.monster_types.includes('Effect') ? 'Monster Effect' : 'Description'
-    let normalText = !cardInfo.monster_types.includes('Effect') && cardInfo.monster_types.length > 1 ? 'None' : cardInfo.text
+    const isNormal = cardInfo.monster_types.includes('Effect') ? 'Monster Effect' : 'Description'
+    const normalText = !cardInfo.monster_types.includes('Effect') && cardInfo.monster_types.length > 1 ? 'None' : cardInfo.text
     embed.addField(isNormal, normalText, true)
   } else {
     embed.addField('Property', cardInfo.property, true) // Quick-Plays etc.
