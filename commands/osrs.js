@@ -9,25 +9,25 @@ const baseURL = 'http://services.runescape.com'
 const wikiSearchURL = 'http://oldschoolrunescape.wikia.com/api/v1/Search/List'
 const wikiIcon = 'https://vignette.wikia.nocookie.net/2007scape/images/8/89/Wiki-wordmark.png'
 const geEndpoint = '/m=itemdb_oldschool/api/catalogue/detail.json'
+
 module.exports.run = async (client, message, args) => {
   if (args.length <= 1) {
     return message.channel.send(`\`Please enter the right query. ex. ${process.env.PREFIX || '!'}osrs player Name or !osrs item dragon dagger\``)
   }
 
-  let searchWhat = null
-  let query = null
   let msg = await message.channel.send('`Searching...`')
-  if (args.length !== 0 && args.length !== 1) {
-    searchWhat = args.shift()
-    if (args[args.length - 1].toLowerCase() === 'potion') {
-      args[args.length - 1] += '(4)'
+  let [searchWhat, ...query] = args
+
+  if (searchWhat && query) {
+    let [last] = query.slice(-1)
+    if (last.toLowerCase() === 'potion') {
+      query[query.length - 1] += '(4)'
     }
-    query = args.join(' ')
   }
+
   try {
     if (searchWhat === 'player') {
       let hiscoreEndpoint = osrsData.flags['--normal']
-      query = query.split(' ')
       for (let i = 0; i < query.length; i++) {
         if (flags.includes(query[i])) {
           hiscoreEndpoint = osrsData.flags[query[i]]
@@ -35,27 +35,28 @@ module.exports.run = async (client, message, args) => {
         }
       }
       const name = helper.capFirstLetter(query.join(' '))
-      const player = await superagent.get(baseURL + hiscoreEndpoint)
+      const { text: player } = await superagent.get(baseURL + hiscoreEndpoint)
         .query({ player: name })
-      const hiscore = interpretPlayerScores(player.text)
+      const hiscore = interpretPlayerScores(player)
       return msg.edit(createPlayerEmbed(hiscore.Skills, name))
     } else if (searchWhat === 'item') {
-      const itemId = findItemIdByName(osrsGE, query)
-      const item = await superagent.get(baseURL + geEndpoint)
+      const search = query.join(' ')
+      const itemId = findItemIdByName(osrsGE, search)
+      const { text: item } = await superagent.get(baseURL + geEndpoint)
         .query({ item: itemId })
-      return msg.edit(createItemEmbed(JSON.parse(item.text).item))
+      return msg.edit(createItemEmbed(JSON.parse(item).item))
     } else if (searchWhat === 'wiki') {
-      const searches = await superagent.get(wikiSearchURL)
-        .query({ query: query, limit: 5, minArticleQuality: 80 }) // .query('?query=dragon+scim&limit=5&minArticleQuality=80')
-      return msg.edit(createWikiSearchEmbed(JSON.parse(searches.text).items, `Search results for "${query}"`))
+      const search = query.join(' ')
+      const results = await wikiSearch(search)
+      return msg.edit(createWikiSearchEmbed(results.items, `Search results for "${search}"`))
     } else {
       return msg.edit(`\`Please enter the right query. ex. ${process.env.PREFIX || '!'}osrs player Name or ${process.env.PREFIX || '!'}osrs item dragon dagger\``)
     }
   } catch (err) {
     if (searchWhat === 'item') {
-      const searches = await superagent.get(wikiSearchURL)
-        .query({ query: query, limit: 5, minArticleQuality: 80 })
-      return msg.edit(createWikiSearchEmbed(JSON.parse(searches.text).items, 'Item not found in GE. Here are the results on wiki.'))
+      const search = query.join(' ')
+      const results = await wikiSearch(search)
+      return msg.edit(createWikiSearchEmbed(results.items, 'Item not found in GE. Here are the results on wiki.'))
     }
     console.log(err)
     return msg.edit('`Item or player not found.`')
@@ -66,6 +67,17 @@ module.exports.help = {
   name: 'osrs',
   parameters: '<item/player> <item_name/user_name>',
   descShort: 'Look up anyone on the Old School RuneScape highscores or look up any item on the OSRS Grand Exchange.'
+}
+
+async function wikiSearch (query) {
+  try {
+    const { text: searches } = await superagent.get(wikiSearchURL)
+      .query({ query: query, limit: 5, minArticleQuality: 80 })
+    return JSON.parse(searches)
+  } catch (err) {
+    console.log(err)
+    return { items: 'Error in Search' }
+  }
 }
 
 function createPlayerEmbed (player, name) {
