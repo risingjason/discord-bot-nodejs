@@ -3,11 +3,12 @@ const superagent = require('superagent')
 
 module.exports.run = async (client, message, args) => {
   let doggy = await getNonMp4()
+  let msg = await message.channel.send('`Searching...`')
   let dogEmbed = new Discord.RichEmbed()
     .setTitle('Random Dog')
     .setColor('#e01d1d')
     .setImage(doggy.url)
-  return message.channel.send(dogEmbed)
+  return msg.edit(dogEmbed)
 }
 
 module.exports.help = {

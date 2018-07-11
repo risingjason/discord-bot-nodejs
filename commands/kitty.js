@@ -3,13 +3,14 @@ const superagent = require('superagent')
 
 module.exports.run = async (client, message, args) => {
   let cat = {}
+  let msg = await message.channel.send('`Searching...`')
   try {
     let { body } = await superagent.get('http://aws.random.cat/meow')
     cat = body
   } catch (err) {
     cat['file'] = ''
     if (err.status === 403) {
-      return message.channel.send('`Sorry :( the random.cat API is down right now or there are too many requests to the server from us.`')
+      return msg.edit('`Sorry :( the random.cat API is down right now or there are too many requests to the server from us.`')
     }
   }
 
@@ -22,7 +23,7 @@ module.exports.run = async (client, message, args) => {
   } else {
     catEmbed.setImage(cat.file)
   }
-  return message.channel.send(catEmbed)
+  return msg.edit(catEmbed)
 }
 
 module.exports.help = {
