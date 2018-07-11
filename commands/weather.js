@@ -26,17 +26,17 @@ module.exports.run = async (client, message, args) => {
   if (args.length < 1) {
     return msg.edit(`\`Please enter some parameters. ex. ${process.env.PREFIX || '!'}weather ${this.help.parameters}\``)
   }
+  const [searchWhat, ...params] = args
   try {
     let forecast
-    if (args[0] === 'daily' || args[0] === 'd') {
+    if (searchWhat === 'daily' || searchWhat === 'd') {
       forecast = false
-    } else if (args[0] === 'forecast' || args[0] === 'f') {
+    } else if (searchWhat === 'forecast' || searchWhat === 'f') {
       forecast = true
     } else {
       return msg.edit(`\`You've typed in the wrong parameters. ex. ${process.env.PREFIX || '!'}weather daily Los Angeles --country US\``)
     }
 
-    const params = args.slice(1)
     const findCountryFlag = params.indexOf('--country')
     let country = 'US'
     // user puts country code
@@ -55,7 +55,7 @@ module.exports.run = async (client, message, args) => {
     } else {
       searchQueries['zip'] = location + ',' + country
     }
-    let weather = await getResponse(searchQueries, forecast)
+    const weather = await getResponse(searchQueries, forecast)
     return msg.edit(forecast ? createForecastEmbed(weather) : createWeatherEmbed(weather))
   } catch (err) {
     console.log(err)
