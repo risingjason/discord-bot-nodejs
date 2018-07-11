@@ -21,8 +21,8 @@ async function getNonMp4 () {
   result['url'] = ''
   while (result.url === '' || result.url.slice(-4).toLowerCase() === '.mp4') {
     try {
-      let response = await superagent.get('https://random.dog/woof.json')
-      result = response.body
+      let { body: doggy } = await superagent.get('https://random.dog/woof.json')
+      result = doggy
     } catch (err) {
       console.log(err)
     }
