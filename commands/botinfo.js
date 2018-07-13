@@ -1,9 +1,9 @@
-const Discord = require('discord.js')
+const Discord = require('discord.js');
 
 module.exports.run = async (client, message, args) => {
   // format
   // !botinfo
-  let botIcon = client.user.displayAvatarURL
+  let botIcon = client.user.displayAvatarURL;
   let botEmbed = new Discord.RichEmbed()
     .setTitle('Chinatown Discord Bot')
     .setDescription('A Discord Bot for the Chinatown LA.')
@@ -13,13 +13,13 @@ module.exports.run = async (client, message, args) => {
       ' API. This bot was created using Node.js. If you would like to see a list of commands, use `!help`.')
     .addField('Check out the project on GitHub!', 'https://github.com/risingjason/discord-bot-nodejs')
     .addField('Bugs/Feedback', 'If you find any bugs or would like to send some feedback, please feel free to DM me.')
-    .setFooter('Created by Jason Yatfai Zhang')
+    .setFooter('Created by Jason Yatfai Zhang');
 
-  return message.channel.send(botEmbed)
-}
+  return message.channel.send(botEmbed);
+};
 
 module.exports.help = {
   name: 'botinfo',
   parameters: '',
-  descShort: 'A more detailed description of the Chinatown Discord Bot.'
-}
+  descShort: 'A more detailed description of the Chinatown Discord Bot.',
+};

@@ -1,11 +1,11 @@
-const Discord = require('discord.js')
+const Discord = require('discord.js');
 
 // config file for local testing
-let config = null
+let config = null;
 try {
-  config = require('../config.json')
+  config = require('../config.json');
 } catch (err) {
-  console.log('Config not found.')
+  console.log('Config not found.');
 }
 
 module.exports.run = async (client, message, args) => {
@@ -16,30 +16,30 @@ module.exports.run = async (client, message, args) => {
   // } else {
   //   return message.channel.send(specificHelp(client, message, args))
   // }
-  return message.channel.send(generalHelp(client, message))
-}
+  return message.channel.send(generalHelp(client, message));
+};
 
 module.exports.help = {
   name: 'help',
   parameters: '',
-  descShort: 'Lists all the usable bot commands.'
-}
+  descShort: 'Lists all the usable bot commands.',
+};
 
 // used for when regular !help is called
-function generalHelp (client, message) {
-  const botIcon = client.user.displayAvatarURL
+function generalHelp(client, message) {
+  const botIcon = client.user.displayAvatarURL;
   let helpMessage = new Discord.RichEmbed()
     .setTitle('Welcome to Chinatown Discord Bot! :mahjong:')
     .setDescription('Here are a list of usable commands.')
     .setColor('#e01d1d')
     .setThumbnail(botIcon)
-    .setFooter('Created by Jason Yatfai Zhang.')
+    .setFooter('Created by Jason Yatfai Zhang.');
 
-  const prefix = config ? config.prefix : process.env.PREFIX
+  const prefix = config ? config.prefix : process.env.PREFIX;
   for (const [cmdName, cmdFull] of client.commands) {
-    helpMessage.addField(prefix + cmdName + '  ' + cmdFull.help.parameters, cmdFull.help.descShort)
+    helpMessage.addField(prefix + cmdName + '  ' + cmdFull.help.parameters, cmdFull.help.descShort);
   }
-  return helpMessage
+  return helpMessage;
 }
 
 // WIP used for when !help <command> is called
