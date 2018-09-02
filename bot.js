@@ -17,21 +17,26 @@ try {
 const prefix = config ? config.prefix : process.env.PREFIX;
 
 // loading up the commands handler
-fs.readdir('./commands/', (err, files) => {
-  if (err) console.log(err);
-
-  const jsFile = files.filter((f) => f.split('.').pop() === 'js');
-  if (jsFile.length <= 0) {
-    console.log('Couldn\'t find commands.');
-  }
-
-  jsFile.forEach((f, i) => {
-    const props = require(`./commands/${f}`);
-    // console.log(`${f} loaded!`)
-    // setting the command name based on the help module
-    client.commands.set(props.help.name, props);
+const findCommands = (path) => {
+  fs.readdir(path, (err, files) => {
+    if (err) console.log(err);
+  
+    const jsFile = files.filter((f) => f.split('.').pop() === 'js');
+    if (jsFile.length <= 0) {
+      console.log('Couldn\'t find commands.');
+      return
+    }
+  
+    jsFile.forEach((f, i) => {
+      const props = require(`${path}${f}`);
+      // console.log(`${f} loaded!`)
+      // setting the command name based on the help module
+      client.commands.set(props.help.name, props);
+    });
   });
-});
+}
+findCommands('./commands/');
+findCommands('./commands/casino/');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
