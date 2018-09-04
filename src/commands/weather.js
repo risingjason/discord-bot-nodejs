@@ -4,7 +4,7 @@ const helper = require('../helper.js');
 // config file for local testing
 let config = null;
 try {
-  config = require('../config.json');
+  config = require('../../config.json');
 } catch (err) {
   console.log('Config not found.');
 }
@@ -24,7 +24,7 @@ module.exports.run = async (client, message, args) => {
     units: 'imperial',
   };
   if (args.length < 1) {
-    return msg.edit(`\`Please enter some parameters. ex. ${process.env.PREFIX || '!'}weather ${this.help.parameters}\``);
+    return msg.edit(`\`Please enter some parameters. ex. ${process.env.PREFIX || '!'}weather ${help.parameters}\``);
   }
   const [searchWhat, ...params] = args;
   try {

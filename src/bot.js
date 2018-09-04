@@ -9,7 +9,7 @@ const updateOsrs = require('./updateOSRSData.js');
 // config file for local testing
 let config = null;
 try {
-  config = require('./config.json');
+  config = require('../config.json');
 } catch (err) {
   console.log('Config not found.');
 }
@@ -17,26 +17,29 @@ try {
 const prefix = config ? config.prefix : process.env.PREFIX;
 
 // loading up the commands handler
-const findCommands = (path) => {
+const findCommands = (path, mod) => {
   fs.readdir(path, (err, files) => {
     if (err) console.log(err);
-  
+
     const jsFile = files.filter((f) => f.split('.').pop() === 'js');
     if (jsFile.length <= 0) {
       console.log('Couldn\'t find commands.');
-      return
+      return;
     }
-  
+
     jsFile.forEach((f, i) => {
-      const props = require(`${path}${f}`);
+      const props = require(`${mod}${f}`);
       // console.log(`${f} loaded!`)
       // setting the command name based on the help module
       client.commands.set(props.help.name, props);
     });
   });
-}
-findCommands('./commands/');
-findCommands('./commands/casino/');
+};
+
+// path needs to be relative to the project root,
+// mod needs to be relative to the directory of bot.js
+findCommands('./src/commands/', './commands/');
+findCommands('./src/commands/casino/', './commands/casino/');
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
