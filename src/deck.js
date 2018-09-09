@@ -35,4 +35,8 @@ module.exports = class Deck {
     this.dealtCards.push(card);
     return card;
   }
+  renew() {
+    this.deck = this.deck.concat(this.dealtCards);
+    this.shuffle();
+  }
 };
